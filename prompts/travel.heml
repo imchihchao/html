@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊行程規劃範本</title>
+    <!-- 載入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 使用 Inter 字體作為主要字體 */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* 淺灰色背景 */
+        }
+        /* 程式碼區塊樣式，模擬程式碼編輯器 */
+        .code-block-container {
+            position: relative;
+            background-color: #1e1e1e; /* 深色背景，模擬 VS Code/IDE */
+            color: #d4d4d4; /* 淺色文字 */
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem; /* 頂部留出空間給標題和按鈕 */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; /* 確保內容過長時可以水平滾動 */
+        }
+        /* 程式碼內容，使用等寬字體 */
+        #itinerary-content {
+            white-space: pre-wrap; /* 保持換行和空格，但允許文字在容器內換行 */
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.6;
+            font-size: 0.875rem; /* sm */
+        }
+        /* 複製按鈕的 SVG 顏色 */
+        .copy-icon {
+            stroke: #9ca3af; /* 灰色 */
+            transition: stroke 0.2s, background-color 0.2s;
+        }
+        .copy-button:hover .copy-icon {
+            stroke: #e5e7eb; /* 淺灰色 */
+        }
+        .copy-button:hover {
+            background-color: #3f3f3f;
+        }
+        .copied {
+            background-color: #10b981 !important; /* 綠色 */
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center sm:text-left">
+            🧳 旅遊行程規劃範本
+        </h1>
+        <p class="text-gray-600 mb-6 text-center sm:text-left">
+            請點擊右上角的複製圖示，將範本內容複製到您的編輯器中進行填寫與規劃。
+        </p>
+
+        <!-- 程式碼區塊容器 -->
+        <div class="code-block-container">
+            <!-- 頂部控制欄：標題與複製按鈕 -->
+            <div class="absolute top-0 left-0 right-0 p-3 flex justify-between items-center border-b border-gray-700/50" style="background-color: #252526; border-radius: 12px 12px 0 0;">
+                <span class="text-sm text-gray-400">旅行規劃範本.txt</span>
+                <button id="copy-button" class="copy-button bg-gray-600/50 hover:bg-gray-700/80 text-white p-1 rounded-md transition duration-200 flex items-center text-xs">
+                    <svg class="copy-icon w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 4l3 3m0 0l-3 3m3-3h12a2 2 0 002-2v-4a2 2 0 00-2-2h-4"></path>
+                    </svg>
+                    <span id="copy-text">複製</span>
+                </button>
+            </div>
+
+            <!-- 實際的行程規劃內容，使用 pre 保持格式 -->
+            <pre id="itinerary-content" class="text-sm pt-4">
+
+請幫我規劃一個完整的旅遊行程，包含詳細的每日活動與建議。請根據以下資訊進行規劃：
+
+**旅遊地點：** [旅遊地點]
+**旅遊天數：** [天數]
+**出發日期：** [出發日期]
+**旅遊成員：** [人數與成員特性，例如：2位成人+1位小孩 / 情侶 / 學生團體]
+**旅遊預算：** [預算金額或每人預算]
+**旅遊偏好：** [例如：自然景觀、美食體驗、文化藝術、購物、休閒放鬆、冒險刺激、親子活動等]
+**交通方式：** [例如：自駕、搭乘大眾運輸、包車、機加酒行程等]
+**住宿類型偏好：** [例如：飯店、民宿、露營、青年旅館、溫泉飯店等]
+**飲食偏好或限制：** [例如：素食、清真、不吃海鮮等]
+**特別需求：** [例如：無障礙設施、長者友善、可攜帶寵物、避免人潮等]
+
+請依據以上資訊，提供以下內容：
+
+1. **行程概覽**
+
+   * 簡述整體旅程的主題與風格
+   * 每日的主要活動概要
+
+2. **每日詳細行程**（逐日列出）
+
+   * 上午、下午、晚上活動安排
+   * 各地點之間的交通方式與時間預估
+   * 餐食建議（含當地特色美食推薦）
+   * 可選擇的替代方案（若天氣不佳或時間不足時）
+
+3. **住宿建議**
+
+   * 每晚住宿地區與推薦住宿選擇（含價位範圍與特色）
+
+4. **交通建議**
+
+   * 抵達與離開目的地的方式
+   * 當地移動方式（例如租車、地鐵、步行）
+
+5. **預算規劃**
+
+   * 各項目預估花費（交通、住宿、餐飲、門票、其他）
+   * 範例總預算表
+
+6. **注意事項**
+
+   * 旅遊季節建議與氣候說明
+   * 必備物品清單
+   * 當地文化與安全注意事項
+
+7. **可選延伸建議**
+
+   * 若有多一天／少一天的替代行程
+   * 特別節慶、展覽或市集活動（若行程時間適逢）
+
+</pre>
+        </div>
+
+        <div id="copy-message" class="mt-4 text-center text-sm font-semibold text-green-600 opacity-0 transition-opacity duration-300">
+            ✅ 內容已成功複製到剪貼簿！
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const copyButton = document.getElementById('copy-button');
+            const copyText = document.getElementById('copy-text');
+            const itineraryContent = document.getElementById('itinerary-content');
+            const copyMessage = document.getElementById('copy-message');
+
+            /**
+             * 處理點擊複製按鈕的事件
+             */
+            copyButton.addEventListener('click', () => {
+                // 1. 取得要複製的內容
+                const textToCopy = itineraryContent.innerText;
+
+                // 2. 嘗試使用現代的 Clipboard API
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        showSuccessMessage();
+                    }).catch(err => {
+                        // 如果 Clipboard API 失敗，退而求其次使用 execCommand (for older browsers/iframe restrictions)
+                        fallbackCopyTextToClipboard(textToCopy);
+                    });
+                } else {
+                    // Fallback 機制
+                    fallbackCopyTextToClipboard(textToCopy);
+                }
+            });
+
+            /**
+             * 顯示複製成功的提示訊息，並短暫更改按鈕樣式
+             */
+            function showSuccessMessage() {
+                // 更新按鈕樣式
+                copyButton.classList.add('copied');
+                copyText.textContent = '已複製';
+
+                // 顯示通知訊息
+                copyMessage.classList.remove('opacity-0');
+                copyMessage.classList.add('opacity-100');
+
+
+                // 恢復按鈕和訊息
+                setTimeout(() => {
+                    copyButton.classList.remove('copied');
+                    copyText.textContent = '複製';
+                    copyMessage.classList.remove('opacity-100');
+                    copyMessage.classList.add('opacity-0');
+                }, 1500);
+            }
+
+            /**
+             * 針對無法使用 navigator.clipboard 的環境的備用複製方法
+             */
+            function fallbackCopyTextToClipboard(text) {
+                // 創建一個臨時的 textarea 元素
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+
+                // 設置樣式使其不可見且不影響滾動
+                textArea.style.position = "fixed";
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.width = "2em";
+                textArea.style.height = "2em";
+                textArea.style.padding = "0";
+                textArea.style.border = "none";
+                textArea.style.outline = "none";
+                textArea.style.boxShadow = "none";
+                textArea.style.background = "transparent";
+
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    // 執行複製命令
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showSuccessMessage();
+                    } else {
+                        console.error('Fallback: document.execCommand("copy") failed.');
+                        alert('無法自動複製內容，請手動複製程式碼區塊中的文字。');
+                    }
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                    alert('無法自動複製內容，請手動複製程式碼區塊中的文字。');
+                }
+
+                document.body.removeChild(textArea);
+            }
+        });
+    </script>
+</body>
+</html>
