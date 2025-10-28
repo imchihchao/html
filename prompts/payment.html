@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT 塔羅占卜指令 Prompt</title>
+    <!-- 載入 Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 使用 Inter 字體作為主要字體 */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* 淺灰色背景 */
+        }
+        /* 程式碼區塊樣式，模擬程式碼編輯器 */
+        .code-block-container {
+            position: relative;
+            background-color: #1e1e1e; /* 深色背景，模擬 VS Code/IDE */
+            color: #d4d4d4; /* 淺色文字 */
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem; /* 頂部留出空間給標題和按鈕 */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; /* 確保內容過長時可以水平滾動 */
+        }
+        /* 程式碼內容，使用等寬字體 */
+        #itinerary-content {
+            white-space: pre-wrap; /* 保持換行和空格，但允許文字在容器內換行 */
+            font-family: 'Consolas', 'Courier New', monospace;
+            line-height: 1.6;
+            font-size: 0.875rem; /* sm */
+        }
+        /* 複製按鈕的 SVG 顏色 */
+        .copy-icon {
+            stroke: #9ca3af; /* 灰色 */
+            transition: stroke 0.2s, background-color 0.2s;
+        }
+        .copy-button:hover .copy-icon {
+            stroke: #e5e7eb; /* 淺灰色 */
+        }
+        .copy-button:hover {
+            background-color: #3f3f3f;
+        }
+        .copied {
+            background-color: #10b981 !important; /* 綠色 */
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center sm:text-left">
+            消費記錄
+        </h1>
+        <p class="text-gray-600 mb-6 text-center sm:text-left">
+        </p>
+        <p class="text-gray-600 mb-6 text-center sm:text-left">
+            請點擊右上角的複製圖示。
+        </p>
+
+        <!-- 程式碼區塊容器 -->
+        <div class="code-block-container">
+            <!-- 頂部控制欄：標題與複製按鈕 -->
+            <div class="absolute top-0 left-0 right-0 p-3 flex justify-between items-center border-b border-gray-700/50" style="background-color: #252526; border-radius: 12px 12px 0 0;">
+                <span class="text-sm text-gray-400"></span>
+                <button id="copy-button" class="copy-button bg-gray-600/50 hover:bg-gray-700/80 text-white p-1 rounded-md transition duration-200 flex items-center text-xs">
+                    <svg class="copy-icon w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 4l3 3m0 0l-3 3m3-3h12a2 2 0 002-2v-4a2 2 0 00-2-2h-4"></path>
+                    </svg>
+                    <span id="copy-text">複製</span>
+                </button>
+            </div>
+
+            <!-- 實際的行程規劃內容，使用 pre 保持格式 -->
+            <pre id="itinerary-content" class="text-sm pt-4">
+
+你是一位協助使用者進行記帳的 AI 助理。
+使用者會告訴你每次的消費資訊，你需要根據以下規則蒐集並整理資料，最終輸出 JSON 格式的消費紀錄。
+
+---
+
+### 需要蒐集的欄位
+
+請從使用者的描述中蒐集以下欄位：
+
+| 欄位名稱 | 英文鍵名       | 是否必填 | 說明                  |
+| ---- | ---------- | ---- | ------------------- |
+| 金額   | `Amount`   | 必填 | 消費金額                |
+| 消費項目 | `Item`     | 必填 | 消費的品項或用途            |
+| 日期 | `Date` | 必填 | 消費發生的日期（台灣時區）    |
+| 支付方式 | `Payment` | 必填 | 記錄是使用現金、信用卡、還是行動支付。    |
+| 分類 | `Category` | 選填 | 使用者不必提供，由你判斷並將消費歸類（例如：食, 行, 住）。    |
+| 商店名稱 | `Store`    | 選填 | 商店或地點名稱（若使用者未提及則留空） |
+| 備註   | `Memo`     | 選填 | 其他額外資訊或使用者的補充說明     |
+
+---
+
+### 🔹 蒐集規則
+
+1. **必要欄位**
+   若「金額」、「消費項目」、「日期」、「支付方式」缺少，必須繼續詢問使用者直到補齊。
+
+2. **選填欄位**
+   「分類」使用者不必提供，由你判斷並將消費歸類。
+   「商店名稱」與「備註」若使用者未提及，直接留空，不需要主動追問。
+
+3. **日期處理**
+   * 若使用者未提及日期，預設為「今天」。
+   * 不需再次與使用者確認時間。
+   * JSON 中的日期必須為「台灣時區（UTC+8）」。
+
+4. **額外描述**
+   若使用者有其他描述，且不屬於上述欄位內容，請一律記錄於「備註（Memo）」欄位中。
+
+5. **輸出格式**
+   當所有必要欄位蒐集完成後，輸出為以下格式的 JSON 物件：
+
+```json
+{
+  "Amount": 0,
+  "Item": "",
+  "Date": "",
+  "Payment": "",
+  "Category": "",
+  "Store": "",
+  "Memo": ""
+}
+```
+
+---
+
+### 範例輸入與輸出
+
+**使用者輸入：**
+
+> 我剛在全聯用現金買了一瓶牛奶 65 元。
+
+**AI 應輸出：**
+
+```json
+{
+  "Amount": 65,
+  "Item": "牛奶",
+  "Date": "2025-10-28",
+  "Payment": "現金",
+  "Category": "食",
+  "Store": "全聯",
+  "Memo": ""
+}
+```
+
+
+
+</pre>
+        </div>
+
+        <div id="copy-message" class="mt-4 text-center text-sm font-semibold text-green-600 opacity-0 transition-opacity duration-300">
+            ✅ 內容已成功複製到剪貼簿！
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const copyButton = document.getElementById('copy-button');
+            const copyText = document.getElementById('copy-text');
+            const itineraryContent = document.getElementById('itinerary-content');
+            const copyMessage = document.getElementById('copy-message');
+
+            /**
+             * 處理點擊複製按鈕的事件
+             */
+            copyButton.addEventListener('click', () => {
+                // 1. 取得要複製的內容
+                const textToCopy = itineraryContent.innerText;
+
+                // 2. 嘗試使用現代的 Clipboard API
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        showSuccessMessage();
+                    }).catch(err => {
+                        // 如果 Clipboard API 失敗，退而求其次使用 execCommand (for older browsers/iframe restrictions)
+                        fallbackCopyTextToClipboard(textToCopy);
+                    });
+                } else {
+                    // Fallback 機制
+                    fallbackCopyTextToClipboard(textToCopy);
+                }
+            });
+
+            /**
+             * 顯示複製成功的提示訊息，並短暫更改按鈕樣式
+             */
+            function showSuccessMessage() {
+                // 更新按鈕樣式
+                copyButton.classList.add('copied');
+                copyText.textContent = '已複製';
+
+                // 顯示通知訊息
+                copyMessage.classList.remove('opacity-0');
+                copyMessage.classList.add('opacity-100');
+
+
+                // 恢復按鈕和訊息
+                setTimeout(() => {
+                    copyButton.classList.remove('copied');
+                    copyText.textContent = '複製';
+                    copyMessage.classList.remove('opacity-100');
+                    copyMessage.classList.add('opacity-0');
+                }, 1500);
+            }
+
+            /**
+             * 針對無法使用 navigator.clipboard 的環境的備用複製方法
+             */
+            function fallbackCopyTextToClipboard(text) {
+                // 創建一個臨時的 textarea 元素
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+
+                // 設置樣式使其不可見且不影響滾動
+                textArea.style.position = "fixed";
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.width = "2em";
+                textArea.style.height = "2em";
+                textArea.style.padding = "0";
+                textArea.style.border = "none";
+                textArea.style.outline = "none";
+                textArea.style.boxShadow = "none";
+                textArea.style.background = "transparent";
+
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    // 執行複製命令
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showSuccessMessage();
+                    } else {
+                        console.error('Fallback: document.execCommand("copy") failed.');
+                        alert('無法自動複製內容，請手動複製程式碼區塊中的文字。');
+                    }
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                    alert('無法自動複製內容，請手動複製程式碼區塊中的文字。');
+                }
+
+                document.body.removeChild(textArea);
+            }
+        });
+    </script>
+</body>
+</html>
