@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    let name = urlParams.get('name');
+    name = name ? name : 'World';
+    console.log('Hello, ' + name + '!');
+</script>
